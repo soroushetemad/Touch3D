@@ -1,0 +1,6 @@
+name: Touch3D
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
