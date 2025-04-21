@@ -26,7 +26,7 @@ reward:
   area_regularizer:
   visited_state_penalty: -0.2
   novelty_threshold: 4
-  no_touch_threshold: 30
+  no_touch_threshold: 20
 
 termination:
   horizon_length: 5000
@@ -42,13 +42,11 @@ termination:
 #     global_scaling: 1
 environment:
   object:
-      urdf_path: ["objects/pyramid.urdf"] 
-
-    # urdf_path: ["objects/sphere_small.urdf","objects/cube_small.urdf","objects/cylinder.urdf","objects/pyramid.urdf"] 
+    urdf_path: ["objects/sphere_small.urdf","objects/cube_small.urdf","objects/cylinder.urdf","objects/pyramid.urdf"] 
   #    scaled: True # Has the URDF scale alread been applied?
   #    scale : [[0.06, 0.06, 0.06], [.10, .05, .10]]
   pose:
-    base_position: [ 0, 0, 0.5 ]
+    base_position: [ 0, 0, 0.2 ]
     base_orientation: [ 0.0, 0.0, 0, 1 ]
     global_scaling: 1
 

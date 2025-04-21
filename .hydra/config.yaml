@@ -21,7 +21,7 @@ reward:
   novelty_threshold: 4
   no_touch_threshold: 30
 termination:
-  horizon_length: 2500
+  horizon_length: 5000
 environment:
   object:
     urdf_path:

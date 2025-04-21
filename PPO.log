@@ -331,3 +331,9 @@
 [2025-04-20 21:16:05,736][misc.tacto.renderer][INFO] - Loading configuration from: /home/setemad/AcTExplore/misc/tacto/config_digit.yml
 [2025-04-20 21:16:06,009][pybulletX._wrapper][INFO] - Calling pybullet.setGravity(gravX=0, gravY=0, gravZ=-9.81, physicsClientId=0)
 [2025-04-20 21:16:09,626][misc.tacto.renderer][INFO] - Loading configuration from: /home/setemad/AcTExplore/misc/tacto/config_digit.yml
+[2025-04-20 21:31:27,586][misc.tacto.renderer][INFO] - Loading configuration from: /home/setemad/Touch3D/misc/tacto/config_digit.yml
+[2025-04-20 21:31:27,876][pybulletX._wrapper][INFO] - Calling pybullet.setGravity(gravX=0, gravY=0, gravZ=-9.81, physicsClientId=0)
+[2025-04-20 21:31:32,010][misc.tacto.renderer][INFO] - Loading configuration from: /home/setemad/Touch3D/misc/tacto/config_digit.yml
+[2025-04-20 21:32:44,337][misc.tacto.renderer][INFO] - Loading configuration from: /home/setemad/Touch3D/misc/tacto/config_digit.yml
+[2025-04-20 21:32:44,603][pybulletX._wrapper][INFO] - Calling pybullet.setGravity(gravX=0, gravY=0, gravZ=-9.81, physicsClientId=0)
+[2025-04-20 21:32:48,465][misc.tacto.renderer][INFO] - Loading configuration from: /home/setemad/Touch3D/misc/tacto/config_digit.yml
