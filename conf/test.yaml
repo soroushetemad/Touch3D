@@ -4,16 +4,16 @@ hydra:
 
 RL:
   algorithm: PPO  # RecurrentPPO, PPO
-  policy_network: MlpPolicy # MlpLstmPolicy, MlpPolicy
+  policy_network: CnnPolicy # MlpLstmPolicy, MlpPolicy
   settings: DEMO
   save_dir: PPO_TEST
   save_freq: 50000
-  pretrain_model_path: /home/setemad/AcTExplore/Training/Logs/PPO_Contact_AMB/model_100000_steps.zip
+  pretrain_model_path: Training/Logs/PPO_Contact_AMB/model_300000_steps.zip
   mode: test
 
 action:
   action_num: 13
-  trans_step: 0.001
+  trans_step: 0.0015
   rotate_step: 0.2617993877991494 # np.pi/12
 
 # state:
@@ -22,7 +22,7 @@ action:
 #   max_novel_size: 300
 #   grid_size: 10
 state:
-  input_type: TTA # {TIS(Tactile Image Stacking), TDS(Tactile Difference Stacking), TTS, TTA, depth}
+  input_type: TTS # {TIS(Tactile Image Stacking), TDS(Tactile Difference Stacking), TTS, TTA, depth}
   short_mem_size: 20
   max_novel_size: 300
   grid_size: 10
@@ -30,7 +30,7 @@ state:
 reward:
   type: AMB # {TM(touch and movement),AMB (AM + 1/sqrt(Number of visits)), AM(area and movement)}
   area_regularizer:
-  visited_state_penalty: -0.2
+  visited_state_penalty: -0.10
   novelty_threshold: 4
   no_touch_threshold: 30
   weight: [0.1, 1, 1]  # weight for touching, newly added
@@ -39,7 +39,7 @@ reward:
 #   horizon_length: 5000
 
 termination:
-  horizon_length: 2500
+  horizon_length: 5000
 
 environment:
   object:

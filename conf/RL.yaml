@@ -4,19 +4,19 @@ hydra:
 
 RL:
   algorithm: PPO
-  policy_network: MlpPolicy
+  policy_network: CnnPolicy # MlpPolicy
   save_dir: PPO_Contact_AMB
   save_freq: 50000
-  pretrain_model_path:
+  pretrain_model_path: D:/ENPM690/Final Project/Actexplore practice/Training/Logs/PPO_Contact_AMB/model_300000_steps.zip
   mode: train
 
 action:
   action_num: 13
-  trans_step: 0.001
+  trans_step: 0.0015
   rotate_step: 0.2617993877991494 # np.pi/12
 
 state:
-  input_type: TTA # {TIS(Tactile Image Stacking), TDS(Tactile Difference Stacking), TTS, TTA, depth}
+  input_type: TTS # {TIS(Tactile Image Stacking), TDS(Tactile Difference Stacking), TTS, TTA, depth}
   short_mem_size: 20
   max_novel_size: 300
   grid_size: 10
@@ -24,9 +24,9 @@ state:
 reward:
   type: AMB # {TM(touch and movement),AMB (AM + 1/sqrt(Number of visits)), AM(area and movement)}
   area_regularizer:
-  visited_state_penalty: -0.2
+  visited_state_penalty: -0.10
   novelty_threshold: 4
-  no_touch_threshold: 20
+  no_touch_threshold: 30
 
 termination:
   horizon_length: 5000
@@ -46,7 +46,7 @@ environment:
   #    scaled: True # Has the URDF scale alread been applied?
   #    scale : [[0.06, 0.06, 0.06], [.10, .05, .10]]
   pose:
-    base_position: [ 0, 0, 0.2 ]
+    base_position: [ 0, 0, 0.1 ]
     base_orientation: [ 0.0, 0.0, 0, 1 ]
     global_scaling: 1
 

@@ -59,7 +59,7 @@ class TactoEnv(gym.Env):
             self.observation_space = spaces.Box(low=-1, high=1, shape=(rl_cfg.tacto.height, rl_cfg.tacto.width),
                                                 dtype=np.float32)
         elif rl_cfg.state.input_type == "TTS":
-            self.observation_space = spaces.Box(low=-1, high=1, shape=(rl_cfg.tacto.height, rl_cfg.tacto.width * 5),
+            self.observation_space = spaces.Box(low=-1, high=1, shape=(1, rl_cfg.tacto.height, rl_cfg.tacto.width * 5),
                                                 dtype=np.float32)
 
         elif rl_cfg.state.input_type == "TIS":
@@ -212,15 +212,77 @@ class TactoEnv(gym.Env):
 
         if self.rl_cfg.state.input_type == 'TTS':
             mem_depth = []
-            for h in self.short_history[-5:]:
-                normalized_depth = np.clip(h["obs"] / self.digits.zrange, 0, 1)
-                mem_depth.append(normalized_depth)
-            if len(mem_depth) != 5:
-                mem_depth.append(np.repeat(np.zeros_like(mem_depth[0]), 5 - len(mem_depth), axis=1))
-            observation = np.concatenate(mem_depth, axis=1)
-            obs_color = cv2.applyColorMap((observation * 255).astype("uint8"), cv2.COLORMAP_PLASMA)
-            cv2.imshow("concat_obs", obs_color)
-            cv2.waitKey(1)
+            # Use max(0, len(self.short_history)-5) to prevent negative index if history is short
+            start_index = max(0, len(self.short_history)-5)
+            for h in self.short_history[start_index:]:
+                # Ensure h["obs"] is not None and is a numpy array before clipping
+                if h["obs"] is not None and isinstance(h["obs"], np.ndarray):
+                    normalized_depth = np.clip(h["obs"] / self.digits.zrange, 0, 1)
+                    mem_depth.append(normalized_depth)
+                else:
+                    # Handle cases where observation might be missing in history
+                    # Append zeros of the correct shape
+                    mem_depth.append(np.zeros((self.rl_cfg.tacto.height, self.rl_cfg.tacto.width), dtype=np.float32))
+
+
+            # Pad if fewer than 5 frames are available in history
+            num_frames = len(mem_depth)
+            if num_frames < 5:
+                num_missing = 5 - num_frames
+                if num_frames > 0: # If we have at least one frame to get shape from
+                    # Use shape of the first valid frame for padding dimensions
+                    pad_shape = (mem_depth[0].shape[0], mem_depth[0].shape[1] * num_missing)
+                    padding = np.zeros(pad_shape, dtype=mem_depth[0].dtype)
+                else: # If history was completely empty, create padding based on config
+                    pad_shape = (self.rl_cfg.tacto.height, self.rl_cfg.tacto.width * num_missing)
+                    padding = np.zeros(pad_shape, dtype=np.float32) # Match obs dtype
+
+                # Add padding to the beginning (to ensure most recent frames are at the end)
+                mem_depth = [padding] + mem_depth
+
+            # Ensure all elements are correctly shaped before concatenating (extra check)
+            processed_mem_depth = []
+            expected_height = self.rl_cfg.tacto.height
+            expected_width = self.rl_cfg.tacto.width
+            total_width_processed = 0 # Keep track of width added
+
+            for frame in mem_depth:
+                if frame.shape[0] == expected_height and frame.shape[1] > 0:
+                    processed_mem_depth.append(frame)
+                    total_width_processed += frame.shape[1]
+                # else: # Optionally handle unexpected frame shapes
+
+            # Only concatenate if we have frames
+            if processed_mem_depth:
+                observation = np.concatenate(processed_mem_depth, axis=1)
+
+                # Ensure the final concatenated shape is correct (H, W*5)
+                expected_total_width = expected_width * 5
+                current_width = observation.shape[1]
+
+                if current_width != expected_total_width:
+                    # Pad or truncate if necessary due to potential edge cases
+                    print(f"Warning: TTS observation width mismatch. Expected {expected_total_width}, got {current_width}. Adjusting...")
+                    if current_width < expected_total_width:
+                        diff = expected_total_width - current_width
+                        pad = np.zeros((observation.shape[0], diff), dtype=observation.dtype)
+                        observation = np.concatenate((observation, pad), axis=1) # Pad at the end
+                    elif current_width > expected_total_width:
+                        observation = observation[:, :expected_total_width] # Truncate
+
+                # Optional visualization
+                obs_color = cv2.applyColorMap((observation * 255).astype("uint8"), cv2.COLORMAP_PLASMA)
+                cv2.imshow("concat_obs", obs_color)
+                cv2.waitKey(1)
+
+                # --- > KEY CHANGE: Add channel dimension <---
+                observation = np.expand_dims(observation, axis=0) # Shape becomes (1, H, W*5)
+
+            else:
+                # Handle case where observation couldn't be formed (e.g., issues during history processing)
+                # Return a zero array with the correct 3D shape
+                observation = np.zeros((1, self.rl_cfg.tacto.height, self.rl_cfg.tacto.width * 5), dtype=np.float32)
+
         if self.rl_cfg.state.input_type == 'TTA':
             mem_depth = []
             for h in self.short_history[-5:]:
