@@ -27,5 +27,3 @@ If you didn’t include the pip requirements in the YAML file, you can install t
 ```bash
 pip install -r requirements.txt
 ```
-
-This two-step process ensures you have a conda environment with Python 3.9 and then installs the CUDA-enabled PyTorch packages from the specified channels.
