@@ -12,7 +12,7 @@ Then, activate your new environment:
 conda activate Touch3D
 ```
 
-### 3. Install PyTorch and Related Packages
+### 2. Install PyTorch and Related Packages
 
 Now that your environment is set up with Python 3.9, run the following command to install PyTorch, torchvision, torchaudio, and the appropriate CUDA toolkit. Below is for CUDA 12.1:
 
@@ -20,10 +20,21 @@ Now that your environment is set up with Python 3.9, run the following command t
 conda install pytorch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 pytorch-cuda=12.8 -c pytorch -c nvidia
 ```
 
-### 4. (Optional) Install Additional pip Packages
+### 3. (Optional) Install Additional pip Packages
 
 If you didn’t include the pip requirements in the YAML file, you can install them now:
 
 ```bash
 pip install -r requirements.txt
 ```
+### 4. Train PPO
+```bash
+python3 PPO.py
+```
+### 5. Test 
+```bash
+python3 test.py
+```
+
+
+
