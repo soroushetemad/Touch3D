@@ -37,7 +37,7 @@ This two-step process ensures you have a conda environment with Python 3.9 and t
 - Run the following command in your terminal to train the network:
 
     ```bash
-    pythn PPO.py
+    python PPO.py
     ``` 
 **Note:** The network will train from scratch for 500k steps. You can change the parameters in `PPO.py` file or give a pretrained model path in `conf/RL.yaml` 
 
@@ -48,7 +48,7 @@ This two-step process ensures you have a conda environment with Python 3.9 and t
 - Set configuration at `conf/test.yaml` for testing:
 
     - RL:
-        - pretrain_model_path: `Training/Logs/PPO_Contact_AMB/you_latest_model.zip` 
+        - pretrain_model_path: `Training/Logs/PPO_Contact_AMB/your_latest_model.zip` 
 
     - Environment:
         - Object:
