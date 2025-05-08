@@ -14,21 +14,21 @@
 
 ### 2. Install PyTorch and Related Packages
 
-Now that your environment is set up with Python 3.9, run the following command to install PyTorch, torchvision, torchaudio, and the appropriate CUDA toolkit. Below is for CUDA 12.1:
+- Now that your environment is set up with Python 3.9, run the following command to install PyTorch, torchvision, torchaudio, and the appropriate CUDA toolkit. Below is for CUDA 12.1:
 
-```bash
-conda install pytorch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 pytorch-cuda=12.8 -c pytorch -c nvidia
-```
+    ```bash
+    conda install pytorch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 pytorch-cuda=12.8 -c pytorch -c nvidia
+    ```
 
 ### 3. (Optional) Install Additional pip Packages
 
-If you didn’t include the pip requirements in the YAML file, you can install them now:
+- If you didn’t include the pip requirements in the YAML file, you can install them now:
 
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-This two-step process ensures you have a conda environment with Python 3.9 and then installs the CUDA-enabled PyTorch packages from the specified channels.
+- 
 
 ### 4. (Optional) Training the Network
 
@@ -39,7 +39,7 @@ This two-step process ensures you have a conda environment with Python 3.9 and t
     ```bash
     python PPO.py
     ``` 
-**Note:** The network will train from scratch for 500k steps. You can change the parameters in `PPO.py` file or give a pretrained model path in `conf/RL.yaml` 
+    **Note:** The network will train from scratch for 500k steps. You can change the parameters in `PPO.py` file or give a pretrained model path in `conf/RL.yaml` 
 
 ### 5. Test the Network on Unseen Objects
 
@@ -61,9 +61,9 @@ This two-step process ensures you have a conda environment with Python 3.9 and t
     python test.py
     ``` 
 
-The testing will begin and point cloud is generated after 5000 evaluation steps are over or the sensor goes out of bounds.
+ The testing will begin and point cloud is generated after 5000 evaluation steps are over or the sensor goes out of bounds.
 
-**Note:** If due to some reason the point cloud cannot be visualized after testing is finished; follow the steps below to visualize the generated point cloud.
+    **Note:** If due to some reason the point cloud cannot be visualized after testing is finished; follow the steps below to visualize the generated point cloud.
 
 ### 6:  (optional) Point Cloud Visualization
 
@@ -77,4 +77,4 @@ The testing will begin and point cloud is generated after 5000 evaluation steps 
     python visualize_npy.py
     ```
 
-**NOTE:The live visualiztion is turned off by default to improve performance**
+    **NOTE:The live visualiztion is turned off by default to improve performance**
