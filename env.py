@@ -22,18 +22,33 @@ import os
 
 @dataclass
 class MinMax:
+    """
+    Data class to store minimum and maximum values for workspace boundaries.
+    """
     min: float = None
     max: float = None
 
 
 class TactoEnv(gym.Env):
+    """
+    Custom Gym environment for tactile exploration using a simulated DIGIT sensor.
+    Handles action space, observation space, reward computation, and episode management.
+    """
     def __init__(self, rl_cfg, digit_base=None):
+        """
+        Initialize the tactile environment with the given configuration.
+
+        Args:
+            rl_cfg: Configuration object containing environment, action, and reward settings.
+            digit_base: Optional base position for the digit sensor.
+        """
         ##### Action space #####
         self.action_space = spaces.Discrete(rl_cfg.action.action_num)
         self.trans_step = rl_cfg.action.trans_step
         self.rot_step = rl_cfg.action.rotate_step
         self.rl_cfg = rl_cfg
         self.camera_offset = 0
+        # Mapping from action index to translation/rotation vector
         self.action_to_direction = {
             0: np.array([self.trans_step, 0, 0, 0, 0, 0]),
             1: np.array([-self.trans_step, 0, 0, 0, 0, 0]),  # go forward
@@ -61,15 +76,7 @@ class TactoEnv(gym.Env):
         elif rl_cfg.state.input_type == "TTS":
             self.observation_space = spaces.Box(low=-1, high=1, shape=(1, rl_cfg.tacto.height, rl_cfg.tacto.width * 5),
                                                 dtype=np.float32)
-
-        elif rl_cfg.state.input_type == "TIS":
-            self.observation_space = spaces.Box(low=-1, high=1, shape=(rl_cfg.tacto.height, rl_cfg.tacto.width * 5, 3),
-                                                dtype=np.float32)
-
-        elif rl_cfg.state.input_type == "TDS":
-            self.observation_space = spaces.Box(low=-1, high=1, shape=(rl_cfg.tacto.height, rl_cfg.tacto.width * 5),
-                                                dtype=np.float32)
-
+            
         ##### State variable #####
         self.state = None
         self.color = None
@@ -79,7 +86,7 @@ class TactoEnv(gym.Env):
         ##### Reward variable #####
         self.reward = 0
         self.accumulated_reward = 0
-        # self.reward_weight = rl_cfg.reward.weight
+        self.reward_weight = rl_cfg.reward.weight
         self.diff_norm = 0
 
         ##### Short memory definition #####
@@ -87,7 +94,7 @@ class TactoEnv(gym.Env):
         self.short_mem_size = rl_cfg.state.short_mem_size
         self.no_touch_count = 0
 
-        ##### For Ablation Study 
+        ##### For Ablation Study #####
         # self.novelty_buffer = []
         self.novelty_threshold = rl_cfg.reward.novelty_threshold * self.trans_step
         self.is_novel = False
@@ -104,11 +111,15 @@ class TactoEnv(gym.Env):
         self._physics_client_id = -1
         self.is_touching = False
         self.metric_history = []
+        # a newly added
+        self.previous_coverage = 0.0
 
         ##### Load URDF files #####
         self.digits = tacto.Sensor(**rl_cfg.tacto)
 
-        self._physics_client_id = px.init()
+        #self._physics_client_id = px.init()
+        # Connect to PyBullet and set up the environment
+        self._physics_client_id = p.connect(p.DIRECT)
         p.setGravity(0, 0, 0)
         p.resetDebugVisualizerCamera(**rl_cfg.pybullet_camera)
         p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
@@ -158,6 +169,10 @@ class TactoEnv(gym.Env):
         # camera_thread.start()
 
     def _workspace_bounds(self):
+        """
+        Compute the workspace boundaries for the digit and object.
+        Returns a dictionary with MinMax objects for x, y, z.
+        """
         digit_AABB = p.getAABB(self.digit_body.id)
         obj_AABB = p.getAABB(self.obj.id)
         x_thres = MinMax()
@@ -198,17 +213,17 @@ class TactoEnv(gym.Env):
         if len(self.short_history) > self.short_mem_size:
             self.short_history.pop(0)
 
-        ##### Add loation for visualization #####
+        ##### Add location for visualization #####
         if self.is_touching:
             self.recon.insert_data(self.short_history[-1], self.pointcloud)
         if self.realtime:
             self.recon.realtime_visualize(cv2.flip(self.obs, 1))
 
         ##### Compute State/Observation State #####
-        if self.rl_cfg.state.input_type == 'depth':
-            # cv2.waitKey(1)
-            observation = np.clip(np.array(self.obs) / self.digits.zrange, 0, 1)
-            # cv2.imshow("depth obs", (observation * 255).astype("uint8"))
+        # if self.rl_cfg.state.input_type == 'depth':
+        #     # cv2.waitKey(1)
+        #     observation = np.clip(np.array(self.obs) / self.digits.zrange, 0, 1)
+        #     # cv2.imshow("depth obs", (observation * 255).astype("uint8"))
 
         if self.rl_cfg.state.input_type == 'TTS':
             mem_depth = []
@@ -223,7 +238,6 @@ class TactoEnv(gym.Env):
                     # Handle cases where observation might be missing in history
                     # Append zeros of the correct shape
                     mem_depth.append(np.zeros((self.rl_cfg.tacto.height, self.rl_cfg.tacto.width), dtype=np.float32))
-
 
             # Pad if fewer than 5 frames are available in history
             num_frames = len(mem_depth)
@@ -271,9 +285,9 @@ class TactoEnv(gym.Env):
                         observation = observation[:, :expected_total_width] # Truncate
 
                 # Optional visualization
-                obs_color = cv2.applyColorMap((observation * 255).astype("uint8"), cv2.COLORMAP_PLASMA)
-                cv2.imshow("concat_obs", obs_color)
-                cv2.waitKey(1)
+                # obs_color = cv2.applyColorMap((observation * 255).astype("uint8"), cv2.COLORMAP_PLASMA)
+                # cv2.imshow("concat_obs", obs_color)
+                # cv2.waitKey(1)
 
                 # --- > KEY CHANGE: Add channel dimension <---
                 observation = np.expand_dims(observation, axis=0) # Shape becomes (1, H, W*5)
@@ -289,8 +303,8 @@ class TactoEnv(gym.Env):
                 normalized_depth = np.clip(h["obs"] / self.digits.zrange, 0, 1)
                 mem_depth.append(normalized_depth)
             observation = np.average(mem_depth, weights=[1 + i / 50 for i in range(len(mem_depth))], axis=0)
-            cv2.imshow("mem_depth", (observation * 255).astype("uint8"))
-            cv2.waitKey(1)
+            # cv2.imshow("mem_depth", (observation * 255).astype("uint8"))
+            # cv2.waitKey(1)
 
         return observation
 
@@ -302,22 +316,6 @@ class TactoEnv(gym.Env):
             float: The computed reward value.
         """
         ## Assumes self.is_touching is updated in compute_observation in advance
-        if self.rl_cfg.reward.type == "TM":
-            reward = 1 if self.is_touching else 0
-
-            min_movement = 2 * [np.iinfo(int).max]
-            for h in self.short_history:
-                trans_diff = np.linalg.norm(np.subtract(self.curr_pos, h["pose"][0]))
-                ori_diff = np.arccos(2 * np.vdot(self.curr_ori, h["pose"][1]) ** 2 - 1)
-                if (h["reward"] >= 0 or h["reward"] == 0.15 * self.rl_cfg.reward.visited_state_penalty) and trans_diff < \
-                        min_movement[0] and ori_diff < min_movement[1]:
-                    # Close point which has already received a reward
-                    min_movement[0] = trans_diff
-                    min_movement[1] = ori_diff
-
-            if min_movement[0] <= self.trans_step * 0.75 and min_movement[1] <= self.rot_step * 0.75:
-                reward = self.rl_cfg.reward.visited_state_penalty
-
         if self.rl_cfg.reward.type == "AM":
             reward = self._compute_area()
             min_movement = 2 * [np.iinfo(int).max]
@@ -371,11 +369,12 @@ class TactoEnv(gym.Env):
                 reward = self.rl_cfg.reward.visited_state_penalty
             if self.action == 12:
                 reward = self.rl_cfg.reward.visited_state_penalty
-            print(f"reward #{self.horizon_counter:05}, total: {reward:2f}, area: {reward_area:2f}, exp: {reward_explore:2f}, act: {self.action}")
+            print(
+                f"reward #{self.horizon_counter:05}, total: {reward:2f}, area: {reward_area:2f}, exp: {reward_explore:2f}, act: {self.action}")
 
         self.accumulated_reward += reward
         return reward
-
+    
     def step_global(self, action):
         """ 
         This function is for visualization

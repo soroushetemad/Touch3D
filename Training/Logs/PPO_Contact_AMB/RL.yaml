@@ -1,30 +1,41 @@
 RL:
   algorithm: PPO
-  policy_network: MlpPolicy
+  policy_network: CnnPolicy
+  learning_rate: 0.0001
   save_dir: PPO_Contact_AMB
   save_freq: 50000
-  pretrain_model_path: null
+  pretrain_model_path: Training/Logs/PPO_Contact_AMB/model_1000000_steps.zip
   mode: train
+  ppo_params:
+    ent_coef: 0.01
+    n_steps: 2048
+    batch_size: 64
+    n_epochs: 10
+    gamma: 0.99
+    gae_lambda: 0.95
 action:
   action_num: 13
-  trans_step: 0.001
+  trans_step: 0.0015
   rotate_step: 0.2617993877991494
 state:
-  input_type: TTA
+  input_type: TTS
   short_mem_size: 20
   max_novel_size: 300
   grid_size: 10
 reward:
   type: AMB
-  area_regularizer: null
-  visited_state_penalty: -0.2
-  novelty_threshold: 4
-  no_touch_threshold: 30
+  area_regularizer: 0.1
+  visited_state_penalty: -0.15
+  novelty_threshold: 3
+  no_touch_threshold: 25
 termination:
   horizon_length: 5000
 environment:
   object:
     urdf_path:
+    - objects/sphere_small.urdf
+    - objects/cube_small.urdf
+    - objects/cylinder.urdf
     - objects/pyramid.urdf
   pose:
     base_position:
@@ -40,7 +51,7 @@ environment:
 tacto:
   width: 60
   height: 80
-  visualize_gui: true
+  visualize_gui: false
   background: conf/D20816.png
 digit:
   urdf_path: misc/meshes/digit.urdf
@@ -58,19 +69,5 @@ pybullet_camera:
   - 0
   - 0.12
 visualization:
-  realtime: true
+  realtime: false
   render: true
-tdn:
-  using_tdn: false
-  use_mask: false
-  real: false
-  tdn_weights: tdn_weights_240.pth.tar
-  render:
-    pixmm: 0.03
-    width: 240
-    height: 320
-    cam_dist: 0.022
-    shear_mag: 5.0
-    pen:
-      min: 0.0005
-      max: 0.002

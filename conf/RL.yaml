@@ -5,10 +5,18 @@ hydra:
 RL:
   algorithm: PPO
   policy_network: CnnPolicy # MlpPolicy
+  learning_rate = 0.0001 # default: 0.0003
   save_dir: PPO_Contact_AMB
   save_freq: 50000
-  pretrain_model_path: D:/ENPM690/Final Project/Actexplore practice/Training/Logs/PPO_Contact_AMB/model_300000_steps.zip
+  pretrain_model_path: 
   mode: train
+  ppo_params:
+    ent_coef: 0.01
+    # n_steps: 2048
+    # batch_size: 64
+    # n_epochs: 10
+    # gamma: 0.99
+    # gae_lambda: 0.95
 
 action:
   action_num: 13
@@ -16,30 +24,21 @@ action:
   rotate_step: 0.2617993877991494 # np.pi/12
 
 state:
-  input_type: TTS # {TIS(Tactile Image Stacking), TDS(Tactile Difference Stacking), TTS, TTA, depth}
+  input_type: TTS #  {TTS, TTA}
   short_mem_size: 20
   max_novel_size: 300
   grid_size: 10
 
 reward:
-  type: AMB # {TM(touch and movement),AMB (AM + 1/sqrt(Number of visits)), AM(area and movement)}
-  area_regularizer:
-  visited_state_penalty: -0.10
-  novelty_threshold: 4
-  no_touch_threshold: 30
+  type: AMB # {AMB (AM + 1/sqrt(Number of visits)), AM(area and movement)}
+  area_regularizer: 0.1
+  visited_state_penalty: -0.15
+  novelty_threshold: 3
+  no_touch_threshold: 25
 
 termination:
   horizon_length: 5000
 
-# environment:
-#   object:
-#     urdf_path: [ "objects/sphere_small.urdf", "objects/cube_small.urdf"]  # {objects/sphere_small.urdf, objects/ycb/YcbGelatinBox/model.urdf}
-#   #    scaled: True # Has the URDF scale alread been applied?
-#   #    scale : [[0.06, 0.06, 0.06], [.10, .05, .10]]
-#   pose:
-#     base_position: [ 0, 0, 0.10 ]
-#     base_orientation: [ 0.0, 0.0, 0, 1 ]
-#     global_scaling: 1
 environment:
   object:
     urdf_path: ["objects/sphere_small.urdf","objects/cube_small.urdf","objects/cylinder.urdf","objects/pyramid.urdf"] 
@@ -53,7 +52,7 @@ environment:
 tacto:
   width: 60
   height: 80
-  visualize_gui: True
+  visualize_gui: False
   background: conf/D20816.png
 
 digit:
@@ -68,36 +67,5 @@ pybullet_camera:
   cameraTargetPosition: [ 0, 0, 0.12 ]
 
 visualization:
-  realtime: True
+  realtime: False
   render: True
-
-tdn:
-  using_tdn: False
-  use_mask: False # Multiply mask to tdn depth output
-  real : false
-  tdn_weights : tdn_weights_240.pth.tar
-
-  render:
-    pixmm : 0.03
-    width : 240 
-    height : 320
-    cam_dist : 0.022
-    shear_mag : 5.0
-    pen : 
-      min : 0.0005 
-      max : 0.002
-
-  # fcrn: 
-  #   real: 
-  #     blend_sz : 10
-  #     border : 10
-  #     ratio : 0.9
-  #     clip : 5
-  #     batch_size : 1
-
-  #   sim: 
-  #     blend_sz : 0
-  #     border : 1
-  #     ratio : 0.2
-  #     clip : 5
-  #     batch_size : 1
