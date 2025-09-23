@@ -81,11 +81,21 @@
 
 ### 7: Results
 
-- This is the live visualization of testing the CNN policy with PPO on unseen 3D object(strawberry in this particular case). The test is conducted for a **single episode of 5000 steps**. 
-
-    ![Strawberry Reconstruction](Results/strawberry_testing.gif)
-    ![Mustard Can Reconstruction](Results/mustardcan_testing.gif)
-
+- This is the live visualization of testing the CNN policy with PPO on unseen 3D object(strawberry and mustard can in this particular case). The test is conducted for a **single episode of 5000 steps**. 
+<table>
+    <tr>
+    <td>
+      <figure>
+        <img src="Results/strawberry_testing.gif" alt="Soup Can Reconstruction" width="300">
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="Results/mustardcan_testing.gif" alt="Tennis Ball Reconstruction" width="300">
+      </figure>
+    </td>
+    </tr>
+<table>
 
 - The point cloud visualization of complex objects is shown below:
 
@@ -93,24 +103,36 @@
   <tr>
     <td>
       <figure>
-        <img src="Results/strawberry_3D_pointcloud.mp4" alt="Strawberry Reconstruction" width="250">
+        <img src="Results/strawberry_3D_pointcloud.gif" alt="Strawberry Reconstruction" width="300">
       </figure>
     </td>
     <td>
       <figure>
-        <img src="Results/clamp_3D_pointcloud.gif" alt="Metal Clamp Reconstruction" width="250">
+        <img src="Results/clamp_3D_pointcloud.gif" alt="Metal Clamp Reconstruction" width="300">
       </figure>
     </td>
   </tr>
     <tr>
     <td>
       <figure>
-        <img src="Results/soupcan_3D_pointcloud.gif" alt="Soup Can Reconstruction" width="250">
+        <img src="Results/soupcan_3D_pointcloud.gif" alt="Soup Can Reconstruction" width="300">
       </figure>
     </td>
     <td>
       <figure>
-        <img src="Results/tennisball_3D_pointcloud.gif" alt="Tennis Ball Reconstruction" width="250">
+        <img src="Results/tennisball_3D_pointcloud.gif" alt="Tennis Ball Reconstruction" width="300">
+      </figure>
+    </td>
+  </tr>
+    <tr>
+    <td>
+      <figure>
+        <img src="Results/can_3D_pointcloud.gif" alt="Soup Can Reconstruction" width="300">
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="Results/pottedcan_3D_pointcloud.gif" alt="Tennis Ball Reconstruction" width="300">
       </figure>
     </td>
   </tr>
