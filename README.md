@@ -84,7 +84,8 @@
 - This is the live visualization of testing the CNN policy with PPO on unseen 3D object(strawberry in this particular case). The test is conducted for a **single episode of 5000 steps**. 
 
     ![Strawberry Reconstruction](Results/strawberry_testing.gif)
-    ![Mustard Can Reconstruction](Results/mustard_can_testing.gif)
+    ![Mustard Can Reconstruction](Results/mustardcan_testing.gif)
+
 
 - The point cloud visualization of complex objects is shown below:
 
@@ -92,36 +93,30 @@
   <tr>
     <td>
       <figure>
-        <img src="Results/strawberry_3D_pointcloud.mp4" alt="Strawberry Reconstruction" width="200">
-        <figcaption>Coverage</figcaption>
+        <img src="Results/strawberry_3D_pointcloud.mp4" alt="Strawberry Reconstruction" width="250">
       </figure>
     </td>
     <td>
       <figure>
-        <img src="Deep_learning_Architectures/results/CNN_BN/test/CNN2.png" alt="Image 2" width="250">
-        <figcaption>Confusion Matrix</figcaption>
+        <img src="Results/clamp_3D_pointcloud.gif" alt="Metal Clamp Reconstruction" width="250">
+      </figure>
+    </td>
+  </tr>
+    <tr>
+    <td>
+      <figure>
+        <img src="Results/soupcan_3D_pointcloud.gif" alt="Soup Can Reconstruction" width="250">
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="Results/tennisball_3D_pointcloud.gif" alt="Tennis Ball Reconstruction" width="250">
       </figure>
     </td>
   </tr>
 </table>
 
-**DenseNet**
 
-<table>
-  <tr>
-    <td>
-      <figure>
-        <img src="Deep_learning_Architectures/results/DenseNet/test/Epochs17.png" alt="Image 1" width="250">
-        <figcaption> Accuracy over Epochs</figcaption>
-      </figure>
-    </td>
-    <td>
-      <figure>
-        <img src="Deep_learning_Architectures/results/DenseNet/test/DenseNet.png" alt="Image 2" width="250">
-        <figcaption>Confusion Matrix</figcaption>
-      </figure>
-    </td>
-  </tr>
-</table>
+
 
 

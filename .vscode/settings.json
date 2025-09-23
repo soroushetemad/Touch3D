@@ -1,3 +1,4 @@
 {
-    "ros.distro": "humble"
+    "ros.distro": "humble",
+    "cmake.sourceDirectory": "D:/ENPM690/Final Project/Touch3D/misc/meshes/ur_description"
 }
